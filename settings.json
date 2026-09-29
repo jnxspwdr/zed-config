@@ -1,0 +1,152 @@
+// Zed settings, ported from VS Code settings.json
+// Location on Windows: %APPDATA%\Zed\settings.json
+{
+	// Installed automatically on first launch, so a fresh machine gets the same extensions.
+	"auto_install_extensions": {
+		"emmet": true,
+		"html": true,
+		"rose-pine-theme": true,
+		"vscode-icons": true
+	},
+
+	// ── Appearance ──────────────────────────────────────────────
+	"vim_mode": true,
+	"vim": {
+		"toggle_relative_line_numbers": true,
+		"use_system_clipboard": "always", // nvim: clipboard=unnamedplus
+		"use_smartcase_find": true // nvim: ignorecase + smartcase
+	},
+ "wsl_connections": [
+  {
+   "distro_name": "archlinux",
+   "user": null,
+   "projects": [
+    {
+     "paths": [
+      "/home/jnx"
+     ]
+    }
+   ]
+  }
+ ],
+ "cursor_animation": {
+		"enabled": false
+	},
+	"text_rendering_mode": "platform_default",
+	"icon_theme": "VSCode Icons for Zed (Dark Official Icons)",
+	"project_panel": {
+		"folder_indicator": "icon",
+		"default_width": 300.0,
+		"dock": "left"
+	},
+	"theme": "Rosé Pine",
+	// icon_theme: install the "vscode-icons" extension, then run
+	// `icon theme selector: toggle` and it will write the key here.
+
+	"buffer_font_family": "Geist Mono",
+	"buffer_font_fallbacks": ["Consolas", "Courier New"],
+	"buffer_line_height": { "custom": 1.5 },
+	// VS Code had window.zoomLevel: 1 (~120%). Zed has no global zoom,
+	// so the sizes are bumped instead. Tune to taste.
+	"ui_font_size": 18,
+	"buffer_font_size": 17,
+
+	// editor.cursorWidth: 3 has no Zed equivalent; only shape and colour are configurable.
+	"cursor_shape": "bar",
+	"theme_overrides": {
+		"Rosé Pine": {
+			// First entry is your own cursor; the rest are collaborator cursors.
+			// If your selection highlight disappears, add a "selection" colour here too.
+			"players": [{ "cursor": "#eb6f92" }]
+		}
+	},
+
+	"minimap": { "show": "always" },
+	"sticky_scroll": { "enabled": true },
+
+	"terminal": { "button": false },
+	"debugger": { "button": false },
+	"outline_panel": { "button": false },
+	"collaboration_panel": { "button": false },
+	"git_panel": { "button": false },
+	"global_lsp_settings": { "button": false },
+	"disable_ai": true,
+
+	// ── Editing ─────────────────────────────────────────────────
+	"base_keymap": "VSCode",
+
+	"tab_size": 2,
+	// Your Prettier config used tabs while the editor inserted spaces.
+	// hard_tabs makes typing match what Prettier writes, and Zed passes it to Prettier as useTabs.
+	"hard_tabs": true,
+	"soft_wrap": "bounded",
+	"preferred_line_length": 100,
+	"format_on_save": "on",
+	"linked_edits": true,
+	"vertical_scroll_margin": 16,
+
+	// Error Lens replacement
+	"diagnostics": { "inline": { "enabled": true }, "button": false },
+	// Color Highlight replacement (colour swatches from the CSS / Tailwind language servers)
+	"lsp_document_colors": "inlay",
+	// Cloak replacement: masks values in .env and other private files
+	"redact_private_values": true,
+
+	// You had VS Code's built-in AI completions off. This keeps inline predictions off
+	// without disabling the agent panel, which is where Claude Code runs in Zed.
+	"show_edit_predictions": false,
+
+	"telemetry": { "diagnostics": false, "metrics": false },
+
+	// ── Languages ───────────────────────────────────────────────
+	"languages": {
+		// YAML forbids tab indentation, so opt it out of the global hard_tabs.
+		"YAML": { "hard_tabs": false }
+	},
+
+	// ── Language servers ────────────────────────────────────────
+	"lsp": {
+		"tailwindcss-language-server": {
+			"settings": {
+				"classAttributes": [
+					"class",
+					"className",
+					"ngClass",
+					"classNames",
+					"modifiersClassNames",
+					"toastOptions",
+					"inputClassName",
+					".*ClassName.*"
+				],
+				// Native cva()/cx() support; replaces your two nested-paren regexes.
+				"classFunctions": ["cva", "cx"],
+				"experimental": {
+					"classRegex": [
+						["ClassName \\=([^]*)", "'([^']*)'"],
+						["ClassName \\=([^]*)", "\"([^\"]*)\""],
+						["ClassName \\=([^]*)", "`([^\\`]*)`"]
+					]
+				}
+			}
+		},
+		"vtsls": {
+			"settings": {
+				"typescript": { "preferences": { "importModuleSpecifier": "non-relative" } },
+				"javascript": { "preferences": { "importModuleSpecifier": "non-relative" } }
+			}
+		},
+		"vscode-css-language-server": {
+			"settings": {
+				"css": {
+					"lint": {
+						"float": "warning",
+						"important": "warning",
+						// Replaces the *.css → tailwindcss file association: stops the CSS server
+						// from flagging @apply, @theme, @tailwind, etc.
+						"unknownAtRules": "ignore"
+					}
+				}
+			}
+		}
+	}
+}

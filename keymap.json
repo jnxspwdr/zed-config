@@ -1,0 +1,270 @@
+// Zed keymap, ported from VS Code keybindings.json
+// Location on Windows: %APPDATA%\Zed\keymap.json
+// Only your overrides are here; base_keymap "VSCode" supplies the rest.
+[
+	// ── Global ──────────────────────────────────────────────────
+	{
+		"bindings": {
+			"ctrl-q": null, // default is Quit; you moved quit to ctrl-alt-q
+			"ctrl-alt-q": "zed::Quit",
+			"ctrl-shift-w": null // default closes the window (Emmet wrap is rebound to it in the Editor block)
+		}
+	},
+	// ── Vim (mirrors ~/.config/nvim) ────────────────────────────
+	// f24 (capslock in firmware) as escape / ctrl-c
+	{
+		"context": "vim_mode == insert",
+		"bindings": { "f24": "vim::NormalBefore" }
+	},
+	{
+		"context": "vim_mode == replace",
+		"bindings": { "f24": "vim::NormalBefore" }
+	},
+	{
+		"context": "vim_mode == visual",
+		"bindings": { "f24": "vim::SwitchToNormalMode" }
+	},
+	{
+		"context": "vim_mode == normal",
+		"bindings": { "f24": "editor::Cancel" }
+	},
+	{
+		"context": "vim_mode == waiting || vim_operator != none",
+		"bindings": { "f24": "vim::ClearOperators" }
+	},
+	{
+		"context": "Editor && (showing_completions || showing_code_actions)",
+		"bindings": { "f24": "editor::Cancel" }
+	},
+	{
+		"context": "Editor && vim_mode == insert && (showing_completions || showing_code_actions)",
+			"bindings": { "f24": ["action::Sequence", ["editor::Cancel", "vim::NormalBefore"]] } // one press: close menu and leave insert
+		},
+		{
+			"context": "VimControl && !menu && !VimCount && vim_mode != insert",
+			"bindings": {
+				// move by screen line on wrapped text (like gj/gk)
+				"j": ["vim::Down", { "display_lines": true }],
+				"k": ["vim::Up", { "display_lines": true }],
+				"down": ["vim::Down", { "display_lines": true }],
+				"up": ["vim::Up", { "display_lines": true }]
+			}
+		},
+		{
+			// smart home like VS Code: first non-blank character, then column 0 on a repeat press.
+			// Normal mode only; skipped after a count/operator so `10j` and `d0` keep working.
+			"context": "vim_mode == normal && vim_operator == none && !VimCount && !menu",
+			"bindings": {
+				"0": ["editor::MoveToBeginningOfLine", { "stop_at_soft_wraps": true, "stop_at_indent": true }]
+			}
+		},
+		{
+			"context": "VimControl && !menu",
+		"bindings": {
+			"space": null // free space for leader chords below
+		}
+	},
+	{
+		"context": "vim_mode == normal && !menu",
+		"bindings": {
+			"space space": "tab_switcher::Toggle",
+			"space s f": "file_finder::Toggle",
+			"space s g": "pane::DeploySearch",
+			"space s d": "diagnostics::Deploy",
+			"space f": "editor::Format",
+			"space q": "diagnostics::Deploy",
+			"J": "editor::Hover", // nvim: diagnostic float under cursor
+			"g r r": "editor::FindAllReferences",
+			"g r i": "editor::GoToImplementation",
+			"g r d": "editor::GoToDefinition",
+			"g r t": "editor::GoToTypeDefinition",
+			"g r n": "editor::Rename",
+			"g r a": "editor::ToggleCodeActions",
+			"g O": "outline::Toggle",
+			"g W": "project_symbols::Toggle",
+				"space s s": "project_symbols::Toggle",
+			"ctrl-e": "file_finder::Toggle"
+		}
+	},
+	// text objects: `cib`/`dib`/`vib` = nearest (), [], {}, <> (default `b` is parens only)
+	{
+		"context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+		"bindings": { "b": "vim::MiniBrackets" }
+	},
+	{
+		"context": "Editor && (vim_mode == insert || vim_mode == normal) && !menu",
+		"bindings": {
+			"ctrl-space": "editor::ShowCompletions"
+		}
+	},
+	{
+		"context": "Editor && (vim_mode == insert || vim_mode == normal || vim_mode == visual)",
+		"bindings": {
+			"f2": "editor::Rename",
+			"f12": "editor::GoToDefinition"
+		}
+	},
+	{
+		"context": "vim_mode == visual && !menu",
+		"bindings": {
+			"space f": "editor::Format",
+			// `space w <char>`: wrap the selection in that pair (opening or closing char both work,
+			// no padding spaces) and land in insert mode right after the opener,
+			// e.g. select a JSX tag, `space w {`, type `foo && ` -> {foo && <Tag />}
+			"space w {": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "} a"]]],
+			"space w }": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "} a"]]],
+			"space w (": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", ") a"]]],
+			"space w )": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", ") a"]]],
+			"space w [": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "] a"]]],
+			"space w ]": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "] a"]]],
+			"space w \"": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "\" a"]]],
+			"space w '": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "' a"]]],
+			"space w `": ["action::Sequence", [["vim::PushAddSurrounds", {}], ["workspace::SendKeystrokes", "` a"]]]
+		}
+	},
+	{
+		"context": "!Terminal",
+		"bindings": {
+			"ctrl-shift-c": null // default toggles the collab panel
+		}
+	},
+
+	// ── Workspace ───────────────────────────────────────────────
+	{
+		"context": "Workspace",
+		"bindings": {
+			"ctrl-alt-s": "workspace::SaveAll",
+			"ctrl-k s": null,
+			"ctrl-shift-s": "workspace::SaveWithoutFormat",
+			"ctrl-k ctrl-shift-s": null,
+			"ctrl-k ctrl-,": "zed::OpenSettings",
+			"ctrl-,": null,
+			"ctrl-shift-n": null, // default opens a new window
+			"ctrl-shift-d": null, // default focuses the debug panel
+			"f11": null // default toggles full screen
+		}
+	},
+
+	// ── Tabs and panes ──────────────────────────────────────────
+	{
+		"context": "Pane",
+		"bindings": {
+			// Tab order, not most-recently-used (Zed's default is the MRU tab switcher)
+			"ctrl-tab": "pane::ActivateNextItem",
+			"ctrl-shift-tab": "pane::ActivatePreviousItem",
+			// Move between split panes (VS Code "editor groups")
+			"ctrl-pagedown": "workspace::ActivateNextPane",
+			"ctrl-pageup": "workspace::ActivatePreviousPane"
+		}
+	},
+
+	// ── Editor ──────────────────────────────────────────────────
+	{
+		"context": "Editor",
+		"bindings": {
+			"ctrl-d": "editor::DuplicateSelection",
+			"ctrl-shift-.": ["editor::SelectNext", { "replace_newest": false }],
+			"ctrl-shift-,": ["editor::SelectPrevious", { "replace_newest": false }],
+
+			"ctrl-shift-d": "editor::DeleteLine",
+			"ctrl-shift-k": null,
+
+			// Smart select
+			"shift-alt-up": "editor::SelectLargerSyntaxNode",
+			"shift-alt-down": "editor::SelectSmallerSyntaxNode",
+			"shift-alt-k": "editor::SelectLargerSyntaxNode",
+			"shift-alt-j": "editor::SelectSmallerSyntaxNode",
+			"shift-alt-right": null,
+			"shift-alt-left": null,
+
+			// Move line/selection, vim-style (replaces alt-up / alt-down)
+			"alt-up": null,
+			"alt-down": null,
+			"alt-k": "editor::MoveLineUp",
+			"alt-j": "editor::MoveLineDown",
+			"alt-h": "editor::Outdent",
+			"alt-l": "editor::Indent",
+
+			// Emmet wrap-with-abbreviation (was VS Code's ctrl+shift+w)
+			"ctrl-shift-w": "editor::WrapWithAbbreviation",
+
+			// Zed has no peek view; the split is the closest match to peekTypeDefinition.
+			"f11": "editor::GoToTypeDefinition",
+			"shift-f11": "editor::GoToTypeDefinitionSplit",
+
+			// explorer.newFile / newFolder: reveal the current file in the project panel,
+			// then create next to it. Test these two; action sequences can misfire
+			// if the first step completes asynchronously.
+			"ctrl-n": ["action::Sequence", ["pane::RevealInProjectPanel", "project_panel::NewFile"]],
+			"ctrl-shift-n": [
+				"action::Sequence",
+				["pane::RevealInProjectPanel", "project_panel::NewDirectory"]
+			]
+		}
+	},
+	{
+		"context": "Editor && extension == md",
+		"bindings": {
+			"ctrl-shift-v": null // you removed markdown preview from this key
+		}
+	},
+
+	// Completion menu: tab/shift-tab cycle, enter accepts
+	{
+		"context": "Editor && showing_completions",
+		"bindings": {
+			"tab": "editor::ContextMenuNext",
+			"shift-tab": "editor::ContextMenuPrevious"
+		}
+	},
+
+	// ctrl-j / ctrl-k move through selection lists (vim-style)
+	{
+		"context": "Editor && (showing_completions || showing_code_actions)",
+		"bindings": {
+			"ctrl-j": "editor::ContextMenuNext",
+			"ctrl-k": "editor::ContextMenuPrevious"
+		}
+	},
+	{
+		// pickers (file finder, tab switcher, command palette, symbol search); the
+		// query box is an Editor, so target it directly to beat vim's/base-keymap's ctrl-j/k
+		"context": "menu || Picker > Editor",
+		"bindings": {
+			"ctrl-j": "menu::SelectNext",
+			"ctrl-k": "menu::SelectPrevious"
+		}
+	},
+
+	// In the editor with no menu open: ctrl-j hover, ctrl-k code actions
+	// (menus above take ctrl-j/k for navigation; keep this block after them)
+	{
+		"context": "Editor && mode == full && !showing_completions && !showing_code_actions",
+		"bindings": {
+			"ctrl-j": "editor::Hover",
+			"ctrl-k": "editor::ToggleCodeActions"
+		}
+	},
+
+	// ── Project panel ───────────────────────────────────────────
+	{
+		"context": "ProjectPanel && not_editing",
+		"bindings": {
+			"ctrl-shift-n": "project_panel::NewDirectory",
+			// explorer.confirmDelete: false
+			"delete": ["project_panel::Trash", { "skip_prompt": true }]
+		}
+	}
+
+	// ── Terminal ────────────────────────────────────────────────
+	// You unbound ctrl-shift-c / ctrl-shift-v copy/paste in VS Code's terminal.
+	// Left enabled here because removing terminal copy/paste is easy to regret;
+	// uncomment to match VS Code exactly.
+	// ,{
+	//   "context": "Terminal",
+	//   "bindings": {
+	//     "ctrl-shift-c": null,
+	//     "ctrl-shift-v": null
+	//   }
+	// }
+]
